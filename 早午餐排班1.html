@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>早午餐智慧排班系統</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .container { display: flex; gap: 20px; }
+        
+        /* 左側員工池 */
+        .employee-pool { width: 250px; background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .employee-card { background: #e3f2fd; padding: 10px; margin-bottom: 10px; border-radius: 5px; cursor: grab; border: 1px solid #90caf9; }
+        .employee-card.unavailable { background: #ffebee; border-color: #ef9a9a; color: #c62828; cursor: not-allowed; }
+        .skill-tag { font-size: 12px; background: #fff; padding: 2px 5px; border-radius: 3px; margin-right: 5px; }
+
+        /* 中央排班畫布 */
+        .canvas { flex-grow: 1; background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ddd; padding: 15px; text-align: center; }
+        th { background-color: #fafafa; }
+        .slot { border: 2px dashed #ccc; border-radius: 5px; padding: 10px; min-height: 40px; cursor: pointer; transition: 0.3s; }
+        .slot:hover { background-color: #f1f8e9; border-color: #8bc34a; }
+        .slot.filled { background-color: #c8e6c9; border: 2px solid #4caf50; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h2>🍳 早午餐智慧排班系統 (2026年5月第一週)</h2>
+        <button style="padding: 10px 20px; background: #4caf50; color: white; border: none; border-radius: 5px; cursor: pointer;">發布班表</button>
+    </div>
+
+    <div class="container">
+        <div class="employee-pool">
+            <h3>可排班人員</h3>
+            <div class="employee-card" id="emp1" onclick="selectEmployee('店長小明', 'emp1')">
+                <strong>店長小明</strong> (正職)<br>
+                <span class="skill-tag">全能</span>
+            </div>
+            <div class="employee-card" id="emp2" onclick="selectEmployee('兼職小華', 'emp2')">
+                <strong>兼職小華</strong> (兼職)<br>
+                <span class="skill-tag">收銀</span><span class="skill-tag">組裝</span>
+            </div>
+            <div class="employee-card unavailable" title="今日已畫休">
+                <strong>兼職阿強</strong> (今日畫休)
+            </div>
+        </div>
+
+        <div class="canvas">
+            <table>
+                <thead>
+                    <tr>
+                        <th>站線 \ 時段</th>
+                        <th>開早 (05:00-06:00)</th>
+                        <th>早餐尖峰 (07:30-09:30)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>收銀</strong></td>
+                        <td>-</td>
+                        <td><div class="slot" onclick="fillSlot(this)">缺 1 人</div></td>
+                    </tr>
+                    <tr>
+                        <td><strong>組裝區</strong></td>
+                        <td><div class="slot" onclick="fillSlot(this)">缺 1 人</div></td>
+                        <td><div class="slot" onclick="fillSlot(this)">缺 2 人</div></td>
+                    </tr>
+                    <tr>
+                        <td><strong>炒台/備料</strong></td>
+                        <td><div class="slot" onclick="fillSlot(this)">缺 1 人</div></td>
+                        <td><div class="slot" onclick="fillSlot(this)">缺 1 人</div></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        let selectedEmp = null;
+
+        // 模擬點擊左側員工
+        function selectEmployee(name, id) {
+            selectedEmp = name;
+            document.querySelectorAll('.employee-card').forEach(el => el.style.borderWidth = '1px');
+            document.getElementById(id).style.borderWidth = '3px';
+            document.getElementById(id).style.borderColor = '#1565c0';
+        }
+
+        // 模擬將員工填入坑位
+        function fillSlot(element) {
+            if (!selectedEmp) {
+                alert("請先從左側選擇一位員工！");
+                return;
+            }
+            element.innerHTML = selectedEmp;
+            element.classList.add("filled");
+            element.style.color = "#2e7d32";
+            selectedEmp = null; // 填完後清空選擇
+            document.querySelectorAll('.employee-card').forEach(el => el.style.borderWidth = '1px');
+        }
+    </script>
+</body>
+</html>
